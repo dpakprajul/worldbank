@@ -6,11 +6,14 @@ Access-Control-Allow-Origin: *,
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./echarts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <title>Document</title>
 </head>
 
 <body>
+    <div id="main" style="width: 600px;height:400px;"></div>
 
     <script>
         request = $.getJSON("https://www.imis.bfs.de/ogc/opendata/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=opendata:odl_brutto_1h&format_options=CHARSET:UTF-8&CQL_FILTER=(end_measure%3D2021-12-15T13%3A00%3A00.000Z)%20AND%20(source%20%3D%20%27BfS%27)&outputFormat=application%2Fjson", {
@@ -24,24 +27,15 @@ Access-Control-Allow-Origin: *,
             }
 
         });
-        var myList;
-        console.log(myList);
-        request.then(function(json) {
+        // var myList;
+        // console.log(myList);
+        var listItem = [];
+        request.then(function(data) {
             for (var i = 0; i < 10; i++) { //json.features.length
-
-
-                if (json) {
-                    var myList = [];
-
-
-                    var listItem = [];
-
-
-                    for (var i in json.features) {
+                if (data) {
+                    for (var i in data.features) {
                         if (i < 10) {
-
-                            var item = json.features[i];
-
+                            var item = data.features[i];
                             listItem.push({
                                 "firstName": item.properties.id,
                                 "value": item.properties.value,
@@ -55,8 +49,46 @@ Access-Control-Allow-Origin: *,
                 }
             }
             console.log(listItem);
+            console.log(listItem.length);
         });
-        console.log(myList);
+        var listItem = [];
+        console.log(listItem);
+        console.log(listItem.length);
+
+
+        var labels = ['Trump', 'Cruz', 'Kasich', 'Rubio'];
+        var datas = listItem.length;
+        newChart(labels, datas);
+
+        function newChart(labels, datas) {
+            labels = labels;
+            datas = datas;
+
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // Specify the configuration items and data for the chart
+            option = {
+                xAxis: {
+                    type: 'category',
+                    data: labels
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    // data: [data.features[i].properties.d_total, 200, 150, 80, 70, 110, 130],
+                    data: datas,
+                    type: 'bar',
+                    showBackground: true,
+                    backgroundStyle: {
+                        color: 'rgba(180, 180, 180, 0.2)'
+                    }
+                }]
+            };
+            // Display the chart using the configuration items and data just specified.
+            myChart.setOption(option);
+
+        }
     </script>
 
 </body>
